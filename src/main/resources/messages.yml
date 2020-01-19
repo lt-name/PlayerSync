@@ -1,0 +1,3 @@
+# message config
+loadingData: "§c[PSYNC] §eLoading your data... please wait."
+loadingDone: "§c[PSYNC] §aSuccessfully loaded your data."

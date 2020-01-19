@@ -1,0 +1,29 @@
+# Choose a database provider. Available: mongodb, mysql
+provider: "ENTER_PROVIDER"
+
+# Increase this if you have a bad connection to the database and items don't load correctly. (default = 50)
+loadDelay: 50
+
+# +++ MySQL Provider +++
+# Fill out the required informations.
+mysql:
+  ip: "127.0.0.1"
+  port: "3306"
+  username: "root"
+  password: ""
+  database: "psync"
+
+
+# +++ MongoDB Provider +++
+# Fill out the required informations. (uri is the mongodb connection string. It starts with "mongodb://" or "mongodb+srv://")
+mongo:
+  uri: ""
+  database: "PlayerSync"
+  collection: "players"
+
+sync:
+  inventory: true
+  enderchest: true
+  health: true
+  food: true
+  exp: true
