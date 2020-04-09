@@ -1,11 +1,17 @@
 # Choose a database provider. Available: mongodb, mysql
 provider: "ENTER_PROVIDER"
 
+# Here you can choose what is used as id.
+# If you use WaterDog it's recommend to set this to "name", due some problems with uuid on WaterDog.
+# If you have problems with "uuid" you can change this to "name".
+# Available Methods: uuid, name
+idMethod: "uuid"
+
 # Increase this if you have a bad connection to the database and items don't load correctly. (default = 50)
 loadDelay: 50
 
 # +++ MySQL Provider +++
-# Fill out the required informations.
+# Fill out the required information.
 mysql:
   ip: "127.0.0.1"
   port: "3306"
@@ -15,7 +21,7 @@ mysql:
 
 
 # +++ MongoDB Provider +++
-# Fill out the required informations. (uri is the mongodb connection string. It starts with "mongodb://" or "mongodb+srv://")
+# Fill out the required information. (uri is the mongodb connection string. It starts with "mongodb://" or "mongodb+srv://")
 mongo:
   uri: ""
   database: "PlayerSync"
@@ -27,3 +33,6 @@ sync:
   health: true
   food: true
   exp: true
+
+# Current config version. Do not change this.
+version: 1

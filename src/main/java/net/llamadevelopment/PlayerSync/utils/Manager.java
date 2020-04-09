@@ -22,6 +22,7 @@ public class Manager {
     public static ArrayList<String> loaded = new ArrayList<>();
     public static boolean inventory, enderchest, health, food, exp;
     public static int loadDelay;
+    public static String idMethod;
 
     public static void savePlayerAsync(Player player) {
         CompletableFuture.runAsync(() -> {
@@ -43,7 +44,7 @@ public class Manager {
         if (inventory && player.getInventory().getContents().size() > 0) {
             inv = ItemAPI.invToString(player.getInventory());
         }
-        PlayerSync.provider.savePlayer(player.getUniqueId().toString(), inv, ec, player.getHealth() + "", player.getFoodData().getLevel(), player.getExperienceLevel(), player.getExperience());
+        PlayerSync.provider.savePlayer(getUserID(player), inv, ec, player.getHealth() + "", player.getFoodData().getLevel(), player.getExperienceLevel(), player.getExperience());
     }
 
     public static void loadPlayer(Player player) {
@@ -82,18 +83,25 @@ public class Manager {
                         player.getEnderChestInventory().setContents(loadedEcInv);
                     }
                 }
-                if (health) {
-                    player.setHealth(syncPlayer.health);
-                }
-                if (food) {
-                    player.getFoodData().setLevel(syncPlayer.food);
-                }
-                if (exp) {
-                    player.setExperience(syncPlayer.exp, syncPlayer.level);
-                }
+
+                if (health) player.setHealth(syncPlayer.health);
+                if (food) player.getFoodData().setLevel(syncPlayer.food);
+                if (exp) player.setExperience(syncPlayer.exp, syncPlayer.level);
+
                 loaded.add(player.getName());
             player.sendMessage(Language.getMessage("loadingDone"));
         }, Manager.loadDelay);
+    }
+
+    public static String getUserID(Player player) {
+        switch (idMethod) {
+            case "uuid":
+                return player.getUniqueId().toString();
+            case "name":
+                return player.getName();
+            default:
+                return null;
+        }
     }
 
 }

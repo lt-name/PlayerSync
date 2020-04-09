@@ -13,10 +13,15 @@ import net.llamadevelopment.PlayerSync.utils.Language;
 import net.llamadevelopment.PlayerSync.utils.Manager;
 import org.bson.Document;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerSync extends PluginBase {
+
+    private static int configVersion = 1;
 
     public static PlayerSync instance;
     public static Provider provider;
@@ -32,6 +37,7 @@ public class PlayerSync extends PluginBase {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        updateConfigIfRequired();
         Config c = getConfig();
         try {
             Language.init();
@@ -41,6 +47,18 @@ public class PlayerSync extends PluginBase {
             Manager.food = c.getBoolean("sync.food");
             Manager.exp = c.getBoolean("sync.exp");
 
+            String idMethod = c.getString("idMethod");
+            switch (idMethod.toLowerCase()) {
+                case "name":
+                    Manager.idMethod = "name";
+                    break;
+                case "uuid":
+                    Manager.idMethod = "uuid";
+                    break;
+                default:
+                    System.out.println(idMethod + " is not a valid id-method.");
+                    return;
+            }
             String prov = c.getString("provider");
             if (prov.equalsIgnoreCase("ENTER_PROVIDER")) {
                 getLogger().info("§a-+-+-+ PlayerSync +-+-+-");
@@ -69,6 +87,22 @@ public class PlayerSync extends PluginBase {
 
     public static PlayerSync getInstance() {
         return instance;
+    }
+
+    public void updateConfigIfRequired() {
+        if (!getConfig().exists("version") || getConfig().getInt("version") != configVersion) {
+            getConfig().set("version", configVersion);
+            Config c = getConfig();
+            try {
+                Files.delete(Paths.get(getDataFolder() + "/config.yml"));
+                saveDefaultConfig();
+                reloadConfig();
+                Config newConf = getConfig();
+                c.getAll().forEach((string, object) -> newConf.set(string, object));
+                newConf.save();
+                System.out.println("The config has been updated to version " + configVersion + ".");
+            } catch (Exception ignored) { }
+        }
     }
 
     public void registerProvider(Provider provider) {

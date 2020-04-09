@@ -7,6 +7,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import net.llamadevelopment.PlayerSync.PlayerSync;
 import net.llamadevelopment.PlayerSync.utils.ItemAPI;
+import net.llamadevelopment.PlayerSync.utils.Manager;
 import net.llamadevelopment.PlayerSync.utils.SyncPlayer;
 import org.bson.Document;
 
@@ -54,7 +55,7 @@ public class MongoProvider extends Provider {
 
     @Override
     public SyncPlayer getPlayer(Player player) {
-        Document doc = invDB.find(new Document("_id", player.getUniqueId().toString())).first();
+        Document doc = invDB.find(new Document("_id", Manager.getUserID(player))).first();
         if (doc != null) {
             return new SyncPlayer(doc.getString("inventory"), doc.getString("enderchest"), Float.parseFloat(doc.getString("health")), doc.getInteger("food"), doc.getInteger("level"), doc.getInteger("exp"));
         } else {
@@ -69,7 +70,7 @@ public class MongoProvider extends Provider {
                 ecInv = ItemAPI.invToString(player.getEnderChestInventory());
             }
 
-            savePlayer(player.getUniqueId().toString(), inv, ecInv, "20.0", 20, 0, 0);
+            savePlayer(Manager.getUserID(player), inv, ecInv, "20.0", 20, 0, 0);
             return new SyncPlayer(inv, ecInv, 20.0f, 20, 0, 0);
         }
     }

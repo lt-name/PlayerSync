@@ -8,21 +8,19 @@ public class Provider {
 
     public void open(Config c) {
 
-    };
+    }
 
     public void close() {
 
-    };
+    }
 
     public void savePlayer(String uuid, String invString, String ecString, String health, int food, int level, int exp) {
 
-    };
+    }
 
-    public SyncPlayer getPlayer(Player player) {
-        return null;
-    };
+    public SyncPlayer getPlayer(Player player) { return null; }
 
     public String getName() {
         return "undefined";
-    };
+    }
 }

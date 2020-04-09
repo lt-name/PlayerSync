@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 import net.llamadevelopment.PlayerSync.PlayerSync;
 import net.llamadevelopment.PlayerSync.utils.ItemAPI;
+import net.llamadevelopment.PlayerSync.utils.Manager;
 import net.llamadevelopment.PlayerSync.utils.SyncPlayer;
 
 import java.sql.*;
@@ -52,7 +53,7 @@ public class MySQLProvider extends Provider {
     @Override
     public SyncPlayer getPlayer(Player player) {
         try {
-            ResultSet res = connection.createStatement().executeQuery("SELECT * FROM " + database + ".players WHERE id='" + player.getUniqueId().toString() + "'");
+            ResultSet res = connection.createStatement().executeQuery("SELECT * FROM " + database + ".players WHERE id='" + Manager.getUserID(player) + "'");
             if (res.next()) {
                 return new SyncPlayer(res.getString("inventory"), res.getString("enderchest"), Float.parseFloat(res.getString("health")), res.getInt("food"), res.getInt("level"), res.getInt("exp"));
             } else {
@@ -67,7 +68,7 @@ public class MySQLProvider extends Provider {
                     ecInv = ItemAPI.invToString(player.getEnderChestInventory());
                 }
 
-                savePlayer(player.getUniqueId().toString(), inv, ecInv, "20.0", 20, 0, 0);
+                savePlayer(Manager.getUserID(player), inv, ecInv, "20.0", 20, 0, 0);
                 return new SyncPlayer(inv, ecInv, 20.0f, 20, 0, 0);
             }
         } catch (SQLException ex) {
