@@ -10,6 +10,9 @@ idMethod: "uuid"
 # Increase this if you have a bad connection to the database and items don't load correctly. (default = 50)
 loadDelay: 50
 
+# Here you can disable or enable the sounds from PlayerSync
+sounds: true
+
 # +++ MySQL Provider +++
 # Fill out the required information.
 mysql:
@@ -35,4 +38,4 @@ sync:
   exp: true
 
 # Current config version. Do not change this.
-version: 1
+version: 2

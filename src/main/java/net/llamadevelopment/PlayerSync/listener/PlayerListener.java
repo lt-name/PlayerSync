@@ -10,13 +10,6 @@ import net.llamadevelopment.PlayerSync.utils.Manager;
 
 public class PlayerListener implements Listener {
 
-    /*@EventHandler
-    public void onJoin(DataPacketReceiveEvent event) {
-        if (event.getPacket() instanceof SetLocalPlayerAsInitializedPacket) {
-            Manager.loadPlayer(event.getPlayer());
-        }
-    }*/
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Manager.loadPlayer(event.getPlayer());

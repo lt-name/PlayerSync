@@ -21,11 +21,12 @@ import java.util.Map;
 
 public class PlayerSync extends PluginBase {
 
-    private static int configVersion = 1;
+    private static int configVersion = 2;
 
     public static PlayerSync instance;
     public static Provider provider;
     public static Map<String, Provider> providers = new HashMap<>();
+    public static boolean sounds;
 
     @Override
     public void onLoad() {
@@ -48,6 +49,7 @@ public class PlayerSync extends PluginBase {
             Manager.exp = c.getBoolean("sync.exp");
 
             String idMethod = c.getString("idMethod");
+            sounds = c.getBoolean("sounds");
             switch (idMethod.toLowerCase()) {
                 case "name":
                     Manager.idMethod = "name";

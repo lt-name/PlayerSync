@@ -2,6 +2,8 @@ package net.llamadevelopment.PlayerSync.utils;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
+import cn.nukkit.network.protocol.PlaySoundPacket;
 import net.llamadevelopment.PlayerSync.PlayerSync;
 import org.bson.Document;
 
@@ -49,6 +51,8 @@ public class Manager {
 
     public static void loadPlayer(Player player) {
 
+        playSound(player, Sound.RANDOM_ORB);
+
         loaded.remove(player.getName());
         SyncPlayer syncPlayer = PlayerSync.provider.getPlayer(player);
 
@@ -59,37 +63,38 @@ public class Manager {
         player.sendMessage(Language.getMessage("loadingData"));
 
         PlayerSync.instance.getServer().getScheduler().scheduleDelayedTask(PlayerSync.instance, () -> {
-                if (inventory) {
-                    String inv = syncPlayer.invString;
-                    if (!inv.equalsIgnoreCase("empty")) {
-                        String[] itemStrings = inv.split("/");
-                        HashMap<Integer, Item> loadedInv = new HashMap<>();
-                        for (String str : itemStrings) {
-                            ItemWithSlot its = ItemAPI.fromString(str);
-                            loadedInv.put(its.slot, its.item);
-                        }
-                        player.getInventory().setContents(loadedInv);
+            if (inventory) {
+                String inv = syncPlayer.invString;
+                if (!inv.equalsIgnoreCase("empty")) {
+                    String[] itemStrings = inv.split("/");
+                    HashMap<Integer, Item> loadedInv = new HashMap<>();
+                    for (String str : itemStrings) {
+                        ItemWithSlot its = ItemAPI.fromString(str);
+                        loadedInv.put(its.slot, its.item);
                     }
+                    player.getInventory().setContents(loadedInv);
                 }
-                if (enderchest) {
-                    String ecInv = syncPlayer.ecString;
-                    if (!ecInv.equals("empty")) {
-                        String[] ecitemStrings = ecInv.split("/");
-                        HashMap<Integer, Item> loadedEcInv = new HashMap<>();
-                        for (String str : ecitemStrings) {
-                            ItemWithSlot its = ItemAPI.fromString(str);
-                            loadedEcInv.put(its.slot, its.item);
-                        }
-                        player.getEnderChestInventory().setContents(loadedEcInv);
+            }
+            if (enderchest) {
+                String ecInv = syncPlayer.ecString;
+                if (!ecInv.equals("empty")) {
+                    String[] ecitemStrings = ecInv.split("/");
+                    HashMap<Integer, Item> loadedEcInv = new HashMap<>();
+                    for (String str : ecitemStrings) {
+                        ItemWithSlot its = ItemAPI.fromString(str);
+                        loadedEcInv.put(its.slot, its.item);
                     }
+                    player.getEnderChestInventory().setContents(loadedEcInv);
                 }
+            }
 
-                if (health) player.setHealth(syncPlayer.health);
-                if (food) player.getFoodData().setLevel(syncPlayer.food);
-                if (exp) player.setExperience(syncPlayer.exp, syncPlayer.level);
+            if (health) player.setHealth(syncPlayer.health);
+            if (food) player.getFoodData().setLevel(syncPlayer.food);
+            if (exp) player.setExperience(syncPlayer.exp, syncPlayer.level);
 
-                loaded.add(player.getName());
+            loaded.add(player.getName());
             player.sendMessage(Language.getMessage("loadingDone"));
+            playSound(player, Sound.RANDOM_LEVELUP);
         }, Manager.loadDelay);
     }
 
@@ -102,6 +107,18 @@ public class Manager {
             default:
                 return null;
         }
+    }
+
+    public static void playSound(Player player, Sound sound) {
+        if (!PlayerSync.sounds) return;
+        PlaySoundPacket packet = new PlaySoundPacket();
+        packet.name = sound.getSound();
+        packet.x = (int) player.getPosition().getX();
+        packet.y = (int) player.getPosition().getY();
+        packet.z = (int) player.getPosition().getZ();
+        packet.volume = 1.0f;
+        packet.pitch = 1.0f;
+        player.dataPacket(packet);
     }
 
 }
